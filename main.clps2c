@@ -1,0 +1,44 @@
+set savePersonaIndexPreBattle 0x009D6A00
+set recoverPersonaIndexPostBattle 0x009D6A40
+
+// GLOBALS //
+// 009D69F0 -> Initially equipped persona index
+// GLOBALS //
+
+ASM_START 0x0029b780
+    j 0x009D6A00
+    nop
+ASM_END
+
+ASM_START savePersonaIndexPreBattle
+    lui $v0, 0x0083
+    lh $v0, 0x6ba8($v0) // Get equipped persona index address
+
+    lui $v1, 0x009D
+    sh $v0, 0x69F0($v1) // Store initially equipped persona pre-battle
+
+    jal 0x0027e410 // Call original function we used to hook
+    nop
+    j 0x0029b788
+    nop
+ASM_END
+
+
+ASM_START 0x001f1db8
+    j 0x009D6A40
+    nop
+ASM_END
+
+ASM_START recoverPersonaIndexPostBattle
+    lui $v0, 0x009D
+    lh $v0, 0x69F0($v0) // Get initially equipped persona pre-battle
+
+    lui $v1, 0x0083
+    sh $v0, 0x6ba8($v1) // Store equipped persona index address
+
+    jal 0x00236280 // Call original function we used to hook
+    nop
+
+    j 0x001f1dc0
+    nop
+ASM_END
